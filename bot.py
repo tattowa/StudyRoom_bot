@@ -1,13 +1,18 @@
 import discord
 from discord.ext import commands
 import traceback
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+PREFIX = os.getenv("PREFIX")
 
 intents = discord.Intents.default()
 intents.voice_states = True
 intents.members = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
 @bot.event
 async def on_ready():
