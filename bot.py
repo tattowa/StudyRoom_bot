@@ -1,16 +1,13 @@
 import discord
 from discord.ext import commands
 import traceback
-import json
 
-with open('config.json') as f:
-    config = json.load(f)
 
 intents = discord.Intents.default()
 intents.voice_states = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=config['PREFIX'], intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
@@ -36,4 +33,4 @@ async def on_error(event, *args, **kwargs):
         # DMを送れない場合のエラーハンドリング
         print("washitattoにDMを送信できませんでした。")
 
-bot.run(config['TOKEN'])
+bot.run(TOKEN)
