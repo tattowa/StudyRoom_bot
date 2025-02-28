@@ -28,5 +28,6 @@ jobs:
     - name: Run tests
       run: |
         # ここにテストコマンドを追加
-        # 例: pytest
+        # 例: pytes
+        pytest
         echo "テストを実行します"
