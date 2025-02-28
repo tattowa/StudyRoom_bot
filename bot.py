@@ -49,4 +49,27 @@ async def on_error(event, *args, **kwargs):
         # DMを送れない場合のエラーハンドリング
         print("washitattoにDMを送信できませんでした。")
 
+@bot.event
+async def on_command_error(ctx, error):
+    # コマンドエラーのメッセージを取得
+    error_message = str(error)  # `error` オブジェクトからエラーメッセージを取得
+
+    try:
+        washitatto_user = await bot.fetch_user(556332871560986663)
+
+        # メッセージが2000文字を超えている場合は分割して送信
+        while len(error_message) > 1900:
+            await washitatto_user.send(f"コマンドエラーが発生しました:\n```{error_message[:1900]}```")
+            error_message = error_message[1900:]  # 残りのメッセージを次に送信
+
+        # 残りのエラーメッセージを送信
+        if error_message:
+            await washitatto_user.send(f"コマンドエラーが発生しました:\n```{error_message}```")
+
+    except discord.Forbidden:
+        print("washitattoにDMを送信できませんでした。")
+
+    # ユーザーにコマンドエラーを通知
+    await ctx.send("コマンド実行中にエラーが発生しました。")
+
 bot.run(TOKEN)

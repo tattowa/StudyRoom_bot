@@ -14,6 +14,31 @@ class StudyTimeTracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def load_data(self):
+        df = pd.read_csv("./data/vc_logs.csv", parse_dates=["timestamp"])
+        df.sort_values("timestamp", inplace=True)
+        return df
+
+    def calculate_study_sessions(self, df):
+        sessions = []
+        user_sessions = {}
+
+        for _, row in df.iterrows():
+            user_id = row["user_id"]
+            if row["action"] == "join":
+                user_sessions[user_id] = row["timestamp"]
+            elif row["action"] == "leave" and user_id in user_sessions:
+                start_time = user_sessions.pop(user_id)
+                duration = (row["timestamp"] - start_time).total_seconds() / 3600
+                sessions.append({
+                    "user_id": user_id,
+                    "date": start_time.date(),
+                    "duration": duration,
+                    "start_time": start_time,
+                    "end_time": row["timestamp"]
+                })
+        return pd.DataFrame(sessions)
+
     def plot_study_time(self, df, user_id=None, period="D"):
         if user_id:
             df = df[df["user_id"] == user_id]
