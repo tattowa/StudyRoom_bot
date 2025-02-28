@@ -1,5 +1,5 @@
 from discord.ext import commands
-import datetime
+from datetime import datetime
 import pandas as pd
 import discord
 
@@ -18,7 +18,7 @@ class VCLogger(commands.Cog):
         if after.channel and after.channel != before.channel:
             entry = {
                 'user_id': member.id,
-                'timestamp': datetime.datetime.now(),
+                'timestamp': datetime.now(),
                 'action': 'join',
                 'channel': after.channel.name
             }
@@ -28,7 +28,7 @@ class VCLogger(commands.Cog):
         elif before.channel and not after.channel:
             entry = {
                 'user_id': member.id,
-                'timestamp': datetime.datetime.now(),
+                'timestamp': datetime.now(),
                 'action': 'leave',
                 'channel': before.channel.name
             }

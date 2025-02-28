@@ -48,7 +48,7 @@ class StudyTimeTracker(commands.Cog):
 
         df_grouped = df.groupby(pd.Grouper(key="start_time", freq=period)).sum(numeric_only=True)
         plt.figure(figsize=(10, 5))
-        df_grouped["duration"].plot(kind="bar", color="skyblue")
+        df_grouped["duration"].plot(kind="line", color="skyblue")
         plt.title("学習時間の推移")
         plt.ylabel("学習時間 (時間)")
         plt.xlabel("日付" if period == "D" else "週")
@@ -65,6 +65,18 @@ class StudyTimeTracker(commands.Cog):
             for idx, (user, duration) in enumerate(ranking.head(3).items())
         ])
         return ranking_text
+
+    def assign_title(self, df, user_id):
+        one_week_ago = datetime.now() - timedelta(days=7)
+        df_week = df[(df["user_id"] == user_id) & (df["start_time"] >= one_week_ago)]
+        total_hours = df_week["duration"].sum()
+
+        if total_hours > 14:
+            return "Master"
+        elif total_hours > 7:
+            return "Expert"
+        else:
+            return "Beginner"
 
     @app_commands.command(name="studytime", description="指定したユーザーの学習時間を集計してグラフを表示します。")
     @app_commands.describe(user="対象ユーザー", period="集計期間: D(日)、W(週)、M(月)")
@@ -112,6 +124,45 @@ class StudyTimeTracker(commands.Cog):
 
         await interaction.response.send_message(report_text)
         await interaction.followup.send(file=discord.File(img_path))
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        entry = None
+        message = None
+
+        # VC参加
+        if after.channel and after.channel != before.channel:
+            entry = {
+                'user_id': member.id,
+                'timestamp': datetime.now(),
+                'action': 'join',
+                'channel': after.channel.name
+            }
+            message = f"🔊 **{member.display_name}** が **{after.channel.name}** に参加しました。"
+
+        # VC退出
+        elif before.channel and not after.channel:
+            entry = {
+                'user_id': member.id,
+                'timestamp': datetime.now(),
+                'action': 'leave',
+                'channel': before.channel.name
+            }
+            message = f"📴 **{member.display_name}** が **{before.channel.name}** から退出しました。"
+
+        # ログをCSVに保存
+        if entry:
+            df = pd.DataFrame([entry])
+            df.to_csv(self.data_file, mode='a', header=not pd.io.common.file_exists(self.data_file), index=False)
+
+        # ログ用テキストチャンネルにメッセージを送信
+        if message:
+            log_channel = self.bot.get_channel(self.log_channel_id)
+            if log_channel:
+                try:
+                    await log_channel.send(message)
+                except discord.HTTPException as e:
+                    print(f"メッセージ送信エラー: {e}")
 
 async def setup(bot):
     await bot.add_cog(StudyTimeTracker(bot))
