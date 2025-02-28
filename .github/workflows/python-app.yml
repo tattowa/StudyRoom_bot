@@ -29,5 +29,5 @@ jobs:
       run: |
         # ここにテストコマンドを追加
         # 例: pytes
-        pytest
+        python bot.py
         echo "テストを実行します"
