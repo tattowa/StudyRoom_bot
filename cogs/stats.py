@@ -48,7 +48,7 @@ class StudyTimeTracker(commands.Cog):
 
         df_grouped = df.groupby(pd.Grouper(key="start_time", freq=period)).sum(numeric_only=True)
         plt.figure(figsize=(10, 5))
-        df_grouped["duration"].plot(kind="bar", color="skyblue")
+        df_grouped["duration"].plot(kind="line", color="skyblue")
         plt.title("学習時間の推移")
         plt.ylabel("学習時間 (時間)")
         plt.xlabel("日付" if period == "D" else "週")
