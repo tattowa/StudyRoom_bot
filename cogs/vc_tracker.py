@@ -20,7 +20,8 @@ class VCLogger(commands.Cog):
                 'user_id': member.id,
                 'timestamp': datetime.now(),
                 'action': 'join',
-                'channel': after.channel.name
+                'channel_id': after.channel.id,
+                'channel_name': after.channel.name
             }
             message = f"🔊 **{member.display_name}** が **{after.channel.name}** に参加しました。"
 
@@ -30,7 +31,8 @@ class VCLogger(commands.Cog):
                 'user_id': member.id,
                 'timestamp': datetime.now(),
                 'action': 'leave',
-                'channel': before.channel.name
+                'channel_id': before.channel.id,
+                'channel_name': before.channel.name
             }
             message = f"📴 **{member.display_name}** が **{before.channel.name}** から退出しました。"
 
