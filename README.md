@@ -12,12 +12,18 @@
    ```bash
    pip install -r requirements.txt
    ```
-3. config.jsonを作成し、Botトークンを入力。
-4. Botを起動：
-    ```bash
-    python bot.py
-    ```
----
+3. bot.pyを起動して、Discord Botを開始します：
+   ```bash
+   python bot.py
+   ```
+4. localhost:8000でAPIを起動します：
+   ```bash
+   uvicorn api:app --reload --port 8000
+   ```
+5. localhost:3000でウェブアプリを起動します：
+   ```bash
+   npm start
+   ```
 
 ## ランク付け機能やアクティビティステータス更新機能
 - 7日間のデータを元にユーザーをランク付けし、上位ユーザーを表示。
