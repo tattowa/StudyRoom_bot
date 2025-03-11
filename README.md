@@ -17,7 +17,7 @@
    python bot.py
    ```
 4. localhost:8000でAPIを起動します：
-   ```bash
+   ```ba
    uvicorn api:app --reload --port 8000
    ```
 5. localhost:3000でウェブアプリを起動します：

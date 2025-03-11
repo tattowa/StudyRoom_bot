@@ -2,6 +2,7 @@ discord.py
 pandas
 python-dotenv
 seaborn
+matplotlib
 japanize_matplotlib
 setuptools
 fastapi
